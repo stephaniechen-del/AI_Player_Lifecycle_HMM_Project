@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+.env
+*.pem
+*.key
+credentials.json
+token.json
+secrets/*
+!secrets/.gitkeep
+connection_template/secrets/*
+!connection_template/secrets/.gitkeep
+
