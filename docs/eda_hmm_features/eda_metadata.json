@@ -1,0 +1,19 @@
+{
+  "input_csv": "/Users/stephaniechen/Documents/New project/AI_Player_Lifecycle_HMM_Project/data/raw/hmm_core_features_fm01_cny_2026_to_may_fast.csv",
+  "rows": 368333,
+  "users": 167265,
+  "date_min": "2026-01-01",
+  "date_max": "2026-05-30",
+  "features": [
+    "bet_days_7d",
+    "no_bet_streak_days",
+    "bet_interval_day",
+    "bet_amount_ratio_today_vs_history",
+    "bet_count_ratio_today_vs_history",
+    "avg_bet_one_time_today_log",
+    "rtp_7_bet_days",
+    "rtp_day",
+    "max_consecutive_loss_count_today",
+    "current_balance_max_to_avg_bet_ratio"
+  ]
+}

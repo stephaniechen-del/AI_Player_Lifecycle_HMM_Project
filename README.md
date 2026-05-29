@@ -46,6 +46,7 @@ connection_template/
 docs/
   redshift_connection_readme.md
   hmm_model_result_summary.md
+  eda_hmm_features/
 ```
 
 ## HMM Core Features
@@ -110,6 +111,14 @@ python3 scripts/run_hmm_core_model.py \
   --states 4 \
   --min-train-days 3 \
   --output-dir model_outputs/hmm_core_model_k4
+```
+
+Run feature EDA:
+
+```bash
+python3 scripts/eda_hmm_features.py \
+  --input-csv data/raw/hmm_core_features_fm01_cny_2026_to_may_fast.csv \
+  --output-dir docs/eda_hmm_features
 ```
 
 ## Security
