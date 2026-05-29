@@ -47,3 +47,22 @@
 - `rtp_7_bet_days` is rolling over the latest 7 betting days, not 7 calendar days.
 - `bet_interval_day` is the daily interval proxy based on first/last bullet timestamp and bullet count.
 - `current_balance_max_to_avg_bet_ratio` can be very right-skewed because it divides max daily balance by historical average single bet.
+
+## Visualizations
+
+![Missing and zero rates](figures/missing_zero_rates.png)
+
+![Feature distributions clipped to P1-P99](figures/feature_distributions_p1_p99.png)
+
+![Feature log distributions](figures/feature_distributions_log1p.png)
+
+![Feature correlation heatmap](figures/feature_correlation_heatmap.png)
+
+![Daily trends](figures/daily_trends.png)
+
+![Bet amount ratio vs count ratio](figures/bet_amount_vs_count_ratio_scatter.png)
+
+![RTP relationship](figures/rtp_day_vs_rtp_7_bet_days.png)
+
+![HMM state share and churn proxy](figures/hmm_state_share_and_churn.png)
+
