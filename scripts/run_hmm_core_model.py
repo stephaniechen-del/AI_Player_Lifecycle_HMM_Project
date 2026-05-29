@@ -9,17 +9,18 @@ from hmmlearn.hmm import GaussianHMM
 
 
 ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = ROOT.parent
 Z_FEATURES = [
-    "active_days_7d_z",
+    "bet_days_7d_z",
     "no_bet_streak_days_z",
-    "bet_frequency_day_median_z",
+    "bet_interval_day_z",
     "bet_amount_ratio_today_vs_history_z",
     "bet_count_ratio_today_vs_history_z",
     "avg_bet_one_time_today_log_z",
-    "rtp_7d_z",
-    "profit_today_to_bet_today_ratio_z",
+    "rtp_7_bet_days_z",
+    "rtp_day_z",
     "max_consecutive_loss_count_today_z",
-    "current_balance_to_avg_bet_ratio_z",
+    "current_balance_max_to_avg_bet_ratio_z",
 ]
 
 RAW_FEATURES = [c.removesuffix("_z") for c in Z_FEATURES]
@@ -28,20 +29,20 @@ RAW_FEATURES = [c.removesuffix("_z") for c in Z_FEATURES]
 def resolve(path):
     p = Path(path)
     if not p.is_absolute():
-        p = ROOT / p
+        p = PROJECT_ROOT / p
     return p
 
 
 def state_label(row):
-    if row["no_bet_streak_days_mean"] >= 3 or row["active_days_7d_mean"] <= 1.25:
+    if row["no_bet_streak_days_mean"] >= 3 or row["bet_days_7d_mean"] <= 1.25:
         if row["churn7_rate"] >= 0.55:
             return "衰退/流失前状态"
         return "低频回访状态"
     if row["bet_amount_ratio_today_vs_history_median"] >= 1.4 or row["bet_count_ratio_today_vs_history_median"] >= 1.4:
-        if row["profit_today_to_bet_today_ratio_mean"] < -0.25:
+        if row["rtp_day_mean"] < 0.75:
             return "高投入追损状态"
         return "高投入增长状态"
-    if row["active_days_7d_mean"] >= 2.3 and row["churn7_rate"] <= 0.35:
+    if row["bet_days_7d_mean"] >= 2.3 and row["churn7_rate"] <= 0.35:
         return "稳定活跃状态"
     return "低频试探状态"
 
@@ -114,16 +115,16 @@ def main():
     profile = result.groupby("hmm_state").agg(
         rows=("user_id", "size"),
         users=("user_id", "nunique"),
-        active_days_7d_mean=("active_days_7d", "mean"),
+        bet_days_7d_mean=("bet_days_7d", "mean"),
         no_bet_streak_days_mean=("no_bet_streak_days", "mean"),
-        bet_frequency_day_median_mean=("bet_frequency_day_median", "mean"),
+        bet_interval_day_mean=("bet_interval_day", "mean"),
         bet_amount_ratio_today_vs_history_median=("bet_amount_ratio_today_vs_history", "median"),
         bet_count_ratio_today_vs_history_median=("bet_count_ratio_today_vs_history", "median"),
         avg_bet_one_time_today_log_mean=("avg_bet_one_time_today_log", "mean"),
-        rtp_7d_mean=("rtp_7d", "mean"),
-        profit_today_to_bet_today_ratio_mean=("profit_today_to_bet_today_ratio", "mean"),
+        rtp_7_bet_days_mean=("rtp_7_bet_days", "mean"),
+        rtp_day_mean=("rtp_day", "mean"),
         max_consecutive_loss_count_today_median=("max_consecutive_loss_count_today", "median"),
-        current_balance_to_avg_bet_ratio_median=("current_balance_to_avg_bet_ratio", "median"),
+        current_balance_max_to_avg_bet_ratio_median=("current_balance_max_to_avg_bet_ratio", "median"),
         bet_count_today_median=("bet_count_today", "median"),
         bet_amount_today_median=("bet_amount_today", "median"),
         churn7_rate=("churn7_proxy", "mean"),

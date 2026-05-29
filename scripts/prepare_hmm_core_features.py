@@ -7,40 +7,38 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = ROOT.parent
 
 RAW_FEATURES = [
-    "active_days_7d",
+    "bet_days_7d",
     "no_bet_streak_days",
-    "bet_frequency_day_median",
+    "bet_interval_day",
     "bet_amount_ratio_today_vs_history",
     "bet_count_ratio_today_vs_history",
     "avg_bet_one_time_today_log",
-    "rtp_7d",
-    "profit_today_to_bet_today_ratio",
+    "rtp_7_bet_days",
+    "rtp_day",
     "max_consecutive_loss_count_today",
-    "current_balance_to_avg_bet_ratio",
+    "current_balance_max_to_avg_bet_ratio",
 ]
 
 
 def resolve(path):
     p = Path(path)
     if not p.is_absolute():
-        p = ROOT / p
+        p = PROJECT_ROOT / p
     return p
 
 
 def prepare(input_csv, output_csv, stats_json):
     df = pd.read_csv(resolve(input_csv), parse_dates=["bet_date"])
 
-    # Fast-export caveat: this column is a pressure proxy in the core fast export.
-    df["loss_bullet_count_today_proxy"] = df["max_consecutive_loss_count_today"]
+    work = df[["user_id", "bet_date"] + RAW_FEATURES].copy()
 
-    work = df[["user_id", "bet_date"] + RAW_FEATURES + ["loss_bullet_count_today_proxy"]].copy()
-
-    work["bet_frequency_day_median"] = work["bet_frequency_day_median"].fillna(0)
+    work["bet_interval_day"] = work["bet_interval_day"].fillna(0)
     work["bet_amount_ratio_today_vs_history"] = work["bet_amount_ratio_today_vs_history"].fillna(1)
     work["bet_count_ratio_today_vs_history"] = work["bet_count_ratio_today_vs_history"].fillna(1)
-    work["current_balance_to_avg_bet_ratio"] = work["current_balance_to_avg_bet_ratio"].fillna(0)
+    work["current_balance_max_to_avg_bet_ratio"] = work["current_balance_max_to_avg_bet_ratio"].fillna(0)
 
     stats = {}
     for col in RAW_FEATURES:
@@ -80,4 +78,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

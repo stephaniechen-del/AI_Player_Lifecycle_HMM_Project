@@ -1,13 +1,13 @@
 {
-  "rows": 365156,
-  "users": 166102,
-  "train_rows": 202530,
-  "train_users": 22691,
+  "rows": 368333,
+  "users": 167265,
+  "train_rows": 204551,
+  "train_users": 22896,
   "states": 4,
   "min_train_days": 3,
   "converged": true,
-  "iterations": 96,
-  "log_likelihood": -1446148.6428272624,
+  "iterations": 125,
+  "log_likelihood": -1589962.950826269,
   "date_min": "2026-01-01",
-  "date_max": "2026-05-29"
+  "date_max": "2026-05-30"
 }

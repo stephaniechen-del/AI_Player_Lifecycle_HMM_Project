@@ -10,9 +10,9 @@ This folder contains the current Redshift export, feature engineering pipeline, 
   - `currency_type = 'CNY'`
   - `game_id = 'FM01'`
 - Date timezone: Beijing time, `DATE(created_at + interval '8 hour')`
-- Export range: `2026-01-01` to `2026-05-29`
-- Final user-day rows: `365,156`
-- Users: `166,102`
+- Export range: `2026-01-01` to `2026-05-30`
+- Final user-day rows: `368,333`
+- Users: `167,265`
 
 ## Folder Layout
 
@@ -53,23 +53,26 @@ docs/
 The model-ready file contains z-score normalized versions of:
 
 ```text
-active_days_7d
+bet_days_7d
 no_bet_streak_days
-bet_frequency_day_median
+bet_interval_day
 bet_amount_ratio_today_vs_history
 bet_count_ratio_today_vs_history
 avg_bet_one_time_today_log
-rtp_7d
-profit_today_to_bet_today_ratio
+rtp_7_bet_days
+rtp_day
 max_consecutive_loss_count_today
-current_balance_to_avg_bet_ratio
+current_balance_max_to_avg_bet_ratio
 ```
 
-## Fast V1 Caveats
+## Feature Notes
 
-- `bet_frequency_day_median` currently uses daily mean interval approximation from min/max/count.
-- `max_consecutive_loss_count_today` currently uses daily loss bullet count as a loss-pressure proxy.
-- This version is suitable for initial HMM state exploration. Exact event-level median interval and consecutive loss streak can be added later.
+- `bet_days_7d` is the count of betting days in the past 7 calendar days, including the current betting day.
+- `bet_interval_day` is the daily interval proxy: `(last bullet timestamp - first bullet timestamp) / (bullet_count - 1)`.
+- `rtp_7_bet_days` uses the latest 7 betting days, not 7 calendar days.
+- `rtp_day` is current-day payout divided by current-day bet.
+- `max_consecutive_loss_count_today` is now calculated exactly from event-level ordered bullets.
+- `current_balance_max_to_avg_bet_ratio` uses the maximum current balance observed that day divided by historical average single bet.
 
 ## Reproduce
 
@@ -77,7 +80,6 @@ Install dependencies:
 
 ```bash
 python3 -m pip install -r connection_template/requirements.txt
-python3 -m pip install hmmlearn joblib
 ```
 
 Export core features:
@@ -113,4 +115,3 @@ python3 scripts/run_hmm_core_model.py \
 ## Security
 
 Do not store real `.env` files or private keys in this project folder unless you intentionally keep the folder local only. Use `connection_template/.env.example` as the template and put real credentials in a local `.env` when running exports.
-
